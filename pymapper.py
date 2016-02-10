@@ -1,6 +1,5 @@
 import copy
 
-
 class PyMapper(object):
     _ignore_props = set()
     _prop_maps = {}
@@ -11,14 +10,16 @@ class PyMapper(object):
 
         return self
 
-    def property_set(self, src_prop_name, dest_prop_name):
-        self.property_set_lamda(dest_prop_name, lambda src: getattr(src, src_prop_name))
-
+    def property_set(self, src, dest_prop_name):
+        if isinstance(src, str):
+            self._property_set_func(dest_prop_name, lambda s: getattr(src, s))
+        if callable(src):
+            self._property_set_func(dest_prop_name, src)
         return self
 
-    def property_set_lamda(self, dest_prop_name, lamda):
+    def _property_set_func(self, src_func, dest_prop_name):
         self.ignore(dest_prop_name)
-        self._prop_maps[dest_prop_name] = lamda
+        self._prop_maps[dest_prop_name] = src_func
 
         return self
 
