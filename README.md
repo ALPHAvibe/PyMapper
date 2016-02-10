@@ -2,7 +2,7 @@
 
 PyMapper is a python utility that stores the property mapping rules for a source and destination.
 PyMapper source and destination can be a dictionary or object and is all inclusive by default.
-You must specify what properties to ignore and can customize any destination property with a lambda function.
+You must specify what properties to ignore and can customize any destination property with a function.
 
 Example:
 
@@ -22,7 +22,7 @@ Example:
                 # select source property to set into destination property
                 .property_set('first_name', 'nick_name')\
                 # create expression for destination property
-                .property_set_lamda('full_name', lambda src: src.first_name + ' ' + src.last_name)
+                .property_set(lambda src: src.first_name + ' ' + src.last_name, 'full_name')
 
     dest_user = mapper.map(src_user, dest_user)
 
