@@ -2,12 +2,10 @@ import copy
 
 
 class PyMapper(object):
-    _ignore_props = set()
-    _prop_maps = {}
-    _list_class_maps = {}
-    _map_strategies = {}
-
     def __init__(self):
+        self._ignore_props = set()
+        self._prop_maps = {}
+        self._list_class_maps = {}
         self._map_strategies['objobj'] = self._map_obj_obj
         self._map_strategies['dictobj'] = self._map_dict_obj
         self._map_strategies['objdict'] = self._map_obj_dict
