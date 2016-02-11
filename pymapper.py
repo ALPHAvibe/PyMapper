@@ -1,9 +1,17 @@
 import copy
 
+
 class PyMapper(object):
     _ignore_props = set()
     _prop_maps = {}
     _list_class_maps = {}
+    _map_strategies = {}
+
+    def __init__(self):
+        self._map_strategies['objobj'] = self._map_obj_obj
+        self._map_strategies['dictobj'] = self._map_dict_obj
+        self._map_strategies['objdict'] = self._map_obj_dict
+        self._map_strategies['dictdict'] = self._map_dict_dict
 
     def ignore(self, dest_property):
         self._ignore_props.add(dest_property)
@@ -12,9 +20,10 @@ class PyMapper(object):
 
     def property_set(self, src, dest_prop_name):
         if isinstance(src, str):
-            self._property_set_func(dest_prop_name, lambda s: getattr(src, s))
-        if callable(src):
-            self._property_set_func(dest_prop_name, src)
+            print(src)
+            self._property_set_func(lambda s: getattr(s, src), dest_prop_name)
+        elif callable(src):
+            self._property_set_func(src, dest_prop_name)
         return self
 
     def _property_set_func(self, src_func, dest_prop_name):
@@ -29,16 +38,7 @@ class PyMapper(object):
         return self
 
     def map(self, src, dest, prepend=''):
-        if hasattr(src, '__dict__') and hasattr(dest, '__dict__'):
-            dest = self._map_obj_obj(src, dest, prepend)
-        elif isinstance(src, dict) and hasattr(dest, '__dict__'):
-            dest = self._map_dict_obj(src, dest, prepend)
-        elif hasattr(src, '__dict__') and isinstance(dest, dict):
-            dest = self._map_obj_dict(src, dest, prepend)
-        elif hasattr(src, '__dict__') and hasattr(dest, '__dict__'):
-            dest = self._map_dict_dict(src, dest, prepend)
-        else:
-            raise ValueError
+        self._map_strategies[self._get_type(src) + self._get_type(dest)](src, dest, prepend)
 
         for k, v in dict((k, v) for k, v in self._prop_maps.items() if k.startswith(prepend) and '.' not in k[len(prepend):]).items():
             setattr(dest, k, v(src))
@@ -60,6 +60,13 @@ class PyMapper(object):
                     dest.append(src[idx])
         else:
             raise ValueError
+
+    def _get_type(self, arg):
+        if hasattr(arg, '__dict__'):
+            return 'obj'
+        if isinstance(arg, dict):
+            return 'dict'
+        return ''
 
     def _map_obj_obj(self, src, dest, prepend=''):
         for a in dir(dest):
