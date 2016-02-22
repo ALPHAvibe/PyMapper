@@ -18,11 +18,13 @@ Example:
             'phone_numbers': None
         }
 
+    def increment_id(src, dest):
+        dest['id'] = src['id'] + 1
+
     mapper = PyMapper()\
             .ignore(lambda d: d['first_name'])\
             .property_set(lambda s: s['email'], lambda d: d['personal_email'])\
-
-    mapper.map(src, dest)
+            .after(increment_id)
 
 ##Set default object destination for list property:
 
