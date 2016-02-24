@@ -16,14 +16,14 @@ class PyMapper(object):
 
     def ignore(self, dest_func):
         inspected = inspect.getsource(dest_func)
-        key = inspected.split(')')[0].split('d: ')[1].strip()
+        key = inspected.split('d: ')[1].split(')')[0].strip()
         self._ignore_props.add(key)
 
         return self
 
     def property_set(self, src_func, dest_func):
         inspected = inspect.getsource(dest_func)
-        key = inspected.split(')')[0].split('d: ')[1].strip()
+        key = inspected.split('d: ')[1].split(')')[0].strip()
         self._ignore_props.add(key)
         self._prop_maps[key] = {'src_func': src_func, 'value': None}
 
@@ -31,7 +31,7 @@ class PyMapper(object):
 
     def list_set_class(self, dest_func, obj):
         inspected = inspect.getsource(dest_func)
-        key = inspected.split(')')[0].split('d: ')[1].strip()
+        key = inspected.split('d: ')[1].split(')')[0].strip()
         self._list_obj[key] = obj
 
         return self
@@ -130,7 +130,9 @@ class PyMapper(object):
         for a in dest:
             prepend_dict = "{0}['{1}']".format(prepend, a).strip()
 
-            if a in src and \
+            if not a.startswith('_') and \
+                    not a.startswith('_') and \
+                    hasattr(src, a) and \
                     prepend_dict not in self._ignore_props and\
                     prepend_dict not in prop_maps:
                 if hasattr(dest[a], '__dict__'):
