@@ -28,8 +28,8 @@ Example:
 
 ##Set default object destination for list property:
 
-    # PhoneNumber class is set as the default destination mapping object for the list
-    mapper.list_set_class(lambda d: d.phone_numbers, PhoneNumber())
+    # PhoneNumber class  set as the default destination mapping object for the list
+    mapper.list_set_class(PhoneNumber(), lambda d: d.phone_numbers)
 
 ## Upcoming Features
 - Set PyMapper for target destination property
