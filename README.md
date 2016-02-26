@@ -5,7 +5,7 @@ PyMapper source and destination can be a dictionary or object and is all inclusi
 You must specify what properties to ignore and can customize any destination property with a function.
 
 Example:
-
+```python
     src = {
             'email': 'foo@bar.com',
             'first_name': 'foo bar',
@@ -25,11 +25,11 @@ Example:
             .ignore(lambda d: d['first_name'])\
             .property_set(lambda s: s['email'], lambda d: d['personal_email'])\
             .after(increment_id)
-
+```
 ##Set default object destination for list property:
-
-    # PhoneNumber class  set as the default destination mapping object for the list
+```python
+    # PhoneNumber class is set as the default destination mapping object for the list
     mapper.list_set_class(PhoneNumber(), lambda d: d.phone_numbers)
-
+```
 ## Upcoming Features
 - Set PyMapper for target destination property
